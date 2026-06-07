@@ -4,7 +4,7 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 
-const SITE = 'https://flipcheck.vercel.app';
+const SITE = 'https://flipcheck-phi.vercel.app';
 const TITLE = 'FlipCheck — Know what it’s worth before you buy it';
 const DESC =
   'Your thrifting co-pilot. Point your camera at any thrift, garage-sale, or estate find and get an instant resale-value range + a Buy / Maybe / Skip verdict. Join the waitlist.';

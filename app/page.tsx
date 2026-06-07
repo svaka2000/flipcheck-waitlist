@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, FormEvent } from 'react';
 
-const SITE = 'https://flipcheck.vercel.app';
+const SITE = 'https://flipcheck-phi.vercel.app';
 
 type JoinState = {
   code: string;
