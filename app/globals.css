@@ -172,3 +172,71 @@ footer a:hover { color: var(--text); }
   .field input, .btn { width: 100%; }
   .visual .f1, .visual .f2 { display: none; }
 }
+
+/* ---------- /scan ---------- */
+.scan-shell { max-width: 480px; margin: 0 auto; padding: 0 18px 64px; min-height: 100dvh; display: flex; flex-direction: column; }
+.scan-top { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; height: 58px; background: rgba(10,11,14,.78); backdrop-filter: blur(10px); }
+.scan-back { font-size: 22px; color: var(--muted); width: 40px; }
+.scan-wordmark { font-weight: 800; font-size: 17px; letter-spacing: -.3px; }
+.scan-remain { font-size: 13px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 5px 12px; border-radius: 999px; }
+.scan-stage { flex: 1; display: flex; flex-direction: column; gap: 16px; padding-top: 14px; }
+.scan-stage.center { align-items: center; text-align: center; justify-content: center; }
+
+.scan-frame { position: relative; width: 100%; aspect-ratio: 4/3; max-height: 320px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.scan-frame-inner { text-align: center; }
+.scan-cam-ic { font-size: 42px; color: var(--accent); line-height: 1; }
+.scan-cam-ic.big { font-size: 52px; }
+.scan-frame-hint { font-size: 13px; margin-top: 10px; color: var(--dim); max-width: 200px; }
+.brk { position: absolute; width: 28px; height: 28px; border: 2px solid var(--accent); }
+.brk.tl { top: 12px; left: 12px; border-right: 0; border-bottom: 0; border-top-left-radius: 8px; }
+.brk.tr { top: 12px; right: 12px; border-left: 0; border-bottom: 0; border-top-right-radius: 8px; }
+.brk.bl { bottom: 12px; left: 12px; border-right: 0; border-top: 0; border-bottom-left-radius: 8px; }
+.brk.brr { bottom: 12px; right: 12px; border-left: 0; border-top: 0; border-bottom-right-radius: 8px; }
+
+.scan-profit { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.scan-profit-label { font-size: 13px; color: var(--muted); }
+.scan-profit-chips { display: flex; gap: 6px; }
+.scan-pchip { padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border2); background: var(--surface2); color: var(--muted); font-weight: 600; font-size: 13px; cursor: pointer; font-family: var(--font); }
+.scan-pchip.on { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.scan-shutter { width: 100%; }
+.scan-foot { text-align: center; color: var(--dim); font-size: 13px; }
+
+.scan-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 16px; margin: 0 auto; }
+.scan-analyzing { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 28px; }
+.scan-spinner { width: 40px; height: 40px; border: 3px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.scan-analyzing-title { font-weight: 600; font-size: 17px; }
+.scan-analyzing-sub { color: var(--muted); font-size: 14px; }
+
+.scan-photo { width: 100%; height: 150px; border-radius: 16px; background-size: cover; background-position: center; background-color: var(--surface); }
+.vbanner { align-self: flex-start; font-weight: 800; font-size: 14px; padding: 8px 16px; border-radius: 999px; border: 1px solid; letter-spacing: .5px; }
+.vbanner.buy { color: var(--buy); border-color: rgba(52,229,161,.5); background: rgba(52,229,161,.12); }
+.vbanner.maybe { color: var(--maybe); border-color: rgba(255,197,61,.5); background: rgba(255,197,61,.12); }
+.vbanner.skip { color: var(--skip); border-color: rgba(255,92,108,.5); background: rgba(255,92,108,.12); }
+.scan-item { font-size: 24px; font-weight: 800; letter-spacing: -.5px; line-height: 1.15; }
+.scan-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip.neutral { color: var(--muted); border-color: var(--border2); background: var(--surface2); }
+.chip.conf-high { color: var(--buy); border-color: rgba(52,229,161,.4); background: rgba(52,229,161,.1); }
+.chip.conf-medium { color: var(--maybe); border-color: rgba(255,197,61,.4); background: rgba(255,197,61,.1); }
+.chip.conf-low { color: var(--skip); border-color: rgba(255,92,108,.4); background: rgba(255,92,108,.1); }
+.chip.small { font-size: 11px; padding: 2px 8px; font-weight: 700; }
+.scan-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 18px; }
+.scan-eyebrow { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); }
+.scan-price { font-size: 34px; font-weight: 800; color: var(--accent); margin-top: 6px; }
+.scan-price span { color: var(--dim); font-weight: 400; }
+.scan-card-sub { font-size: 12px; color: var(--dim); margin-top: 2px; }
+.scan-detail { color: var(--muted); font-size: 15px; line-height: 1.6; }
+.scan-block p { color: var(--muted); font-size: 14.5px; margin-top: 6px; line-height: 1.55; }
+.scan-check { list-style: none; padding: 0; margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+.scan-check li { color: var(--muted); font-size: 14px; padding-left: 22px; position: relative; line-height: 1.4; }
+.scan-check li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.scan-again { width: 100%; margin-top: 8px; }
+.scan-link { background: none; border: 0; color: var(--muted); font-size: 14px; cursor: pointer; margin-top: 6px; font-family: var(--font); }
+.scan-card.pro { padding: 8px; display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.scan-plan { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 12px; background: var(--surface2); }
+.scan-plan.featured { border: 1.5px solid var(--accent); background: var(--accent-soft); }
+.scan-plan > div:first-child { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; text-align: left; }
+.scan-plan strong { font-size: 15px; }
+.scan-plan-price { font-size: 18px; font-weight: 800; white-space: nowrap; }
+.scan-plan-price small { font-size: 12px; color: var(--dim); font-weight: 400; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
