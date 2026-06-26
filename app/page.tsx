@@ -152,8 +152,8 @@ export default function Page() {
             <img src="/icon.png" alt="FlipCheck" />
             FlipCheck
           </div>
-          <a href="#join" className="btn cta">
-            Get early access
+          <a href="/scan" className="btn cta">
+            Scan free →
           </a>
         </div>
       </nav>
@@ -163,7 +163,7 @@ export default function Page() {
           <div>
             <span className="badge reveal">
               <span className="dot" />
-              {total !== null ? `${fmt(total)} thrifters on the waitlist` : 'Now in private beta'}
+              {total !== null ? `${fmt(total)} thrifters using FlipCheck` : 'Live now — free to try'}
             </span>
 
             {!joined ? (
@@ -182,7 +182,19 @@ export default function Page() {
                   <span className="chip skip">SKIP ↓</span>
                 </div>
 
-                <form className="form reveal d3" onSubmit={submit}>
+                <div className="reveal d3" style={{ marginTop: 30 }}>
+                  <a href="/scan" className="btn" style={{ height: 56, fontSize: 17, padding: '0 28px' }}>
+                    Scan something free →
+                  </a>
+                  <p className="formnote" style={{ marginTop: 12 }}>
+                    Live now · 3 free scans · no signup needed
+                  </p>
+                </div>
+
+                <p className="sub" style={{ fontSize: 15, marginTop: 28, marginBottom: 0 }}>
+                  Or get launch news + Pro early access:
+                </p>
+                <form className="form reveal d3" style={{ marginTop: 12 }} onSubmit={submit}>
                   <div className="field">
                     <input
                       type="email"
