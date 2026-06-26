@@ -1,13 +1,14 @@
 import { cookies } from 'next/headers';
+import { isProForUser } from '@/lib/entitlement';
+import { createClient } from '@/lib/supabase/server';
 
 /**
- * Same-origin scan gateway. The browser posts {imageBase64, profitThreshold} here;
- * we resolve a stable anonymous device id (httpOnly cookie) for the free-scan cap,
- * compute Pro entitlement SERVER-SIDE (so the client can never spoof `entitled`),
- * then call the existing flipcheck-proxy vision endpoint server-to-server.
+ * Same-origin scan gateway. Resolves identity + entitlement SERVER-SIDE, then calls the
+ * flipcheck-proxy vision endpoint server-to-server (the client can never spoof `entitled`).
  *
- * Entitlement is hard-false until magic-link auth + the Supabase `subscriptions`
- * table land (build phases B/C). The proxy enforces the free cap by userId.
+ * - Signed-in user  → userId = user.id, entitled = active Pro subscription (Supabase, RLS).
+ * - Anonymous       → userId = stable httpOnly device cookie (fc_did), entitled = false.
+ * The proxy enforces the free-scan cap by userId; entitled lifts it for Pro.
  */
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,21 +26,31 @@ export async function POST(req: Request) {
     return Response.json({ ok: false, code: 'BAD_IMAGE', error: 'Missing image.' }, { status: 400 });
   }
 
-  // Anonymous device id = free-cap key. Generated once, pinned in an httpOnly cookie.
-  const jar = await cookies();
-  let did = jar.get('fc_did')?.value;
-  const isNew = !did;
-  if (!did) did = crypto.randomUUID();
+  let userId: string;
+  let entitled = false;
+  let newDeviceId: string | null = null;
 
-  // TODO(phase C): const entitled = await isProForSession(); — query Supabase subscriptions.
-  const entitled = false;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    userId = user.id;
+    entitled = await isProForUser(user.id);
+  } else {
+    const jar = await cookies();
+    const existing = jar.get('fc_did')?.value;
+    userId = existing || crypto.randomUUID();
+    if (!existing) newDeviceId = userId;
+  }
 
   let upstream: Response;
   try {
     upstream = await fetch(`${PROXY}/api/scan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64, userId: did, profitThreshold, entitled }),
+      body: JSON.stringify({ imageBase64, userId, profitThreshold, entitled }),
       cache: 'no-store',
     });
   } catch {
@@ -54,10 +65,10 @@ export async function POST(req: Request) {
   }
 
   const res = Response.json(data, { status: upstream.status });
-  if (isNew) {
+  if (newDeviceId) {
     res.headers.append(
       'Set-Cookie',
-      `fc_did=${did}; Path=/; Max-Age=${60 * 60 * 24 * 365}; HttpOnly; SameSite=Lax`
+      `fc_did=${newDeviceId}; Path=/; Max-Age=${60 * 60 * 24 * 365}; HttpOnly; SameSite=Lax`
     );
   }
   return res;
