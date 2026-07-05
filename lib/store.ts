@@ -91,9 +91,17 @@ export async function statusOf(code: string): Promise<JoinResult | null> {
   return { code, position: rec.position, referrals: mem.refs.get(code) || 0, total: mem.count, created: false };
 }
 
+// Short in-process TTL cache: the landing polls the count every ~8s per visitor, so this
+// collapses those repeated KV reads (per serverless instance) for a slowly-changing number.
+let totalCache: { value: number; at: number } | null = null;
+const TOTAL_TTL_MS = 10_000;
+
 export async function total(): Promise<number> {
-  if (kvEnabled) return Number(await cmd(['GET', 'wl:count'])) || 0;
-  return mem.count;
+  const now = Date.now();
+  if (totalCache && now - totalCache.at < TOTAL_TTL_MS) return totalCache.value;
+  const value = kvEnabled ? Number(await cmd(['GET', 'wl:count'])) || 0 : mem.count;
+  totalCache = { value, at: now };
+  return value;
 }
 
 /** Displayed position after "skip the line" credit. */

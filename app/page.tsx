@@ -149,7 +149,16 @@ export default function Page() {
       <nav className="nav">
         <div className="wrap row">
           <div className="brand">
-            <img src="/icon.png" alt="FlipCheck" />
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+              <rect width="34" height="34" rx="9" fill="#34e5a1" />
+              <g fill="none" stroke="#06140e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 9 H9 V12" />
+                <path d="M22 9 H25 V12" />
+                <path d="M12 25 H9 V22" />
+                <path d="M22 25 H25 V22" />
+                <path d="M12.5 17.5 l3 3 l6 -7" />
+              </g>
+            </svg>
             FlipCheck
           </div>
           <a href="/scan" className="btn cta">
