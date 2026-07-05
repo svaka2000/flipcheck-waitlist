@@ -16,6 +16,7 @@ interface ScanResult {
   confidence: Confidence;
   verdict: Verdict;
   verifyChecklist: string[];
+  sellChannels?: { platform: string; why: string }[];
 }
 
 type Stage = 'idle' | 'analyzing' | 'result' | 'limit' | 'error';
@@ -184,6 +185,20 @@ export default function ScanPage() {
               <ul className="scan-check">
                 {result.verifyChecklist.map((c, i) => (
                   <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {result.sellChannels && result.sellChannels.length > 0 && (
+            <div className="scan-block">
+              <div className="scan-eyebrow">Where to sell it for the most</div>
+              <ul className="sell-list">
+                {result.sellChannels.map((c, i) => (
+                  <li key={i}>
+                    <span className="sell-plat">{c.platform}</span>
+                    {c.why ? <span className="sell-why">{c.why}</span> : null}
+                  </li>
                 ))}
               </ul>
             </div>
