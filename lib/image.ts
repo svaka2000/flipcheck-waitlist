@@ -36,3 +36,23 @@ export async function compressForScan(file: File | Blob): Promise<Compressed> {
   const base64 = dataUrl.split(',')[1] ?? '';
   return { base64, dataUrl, width, height };
 }
+
+/** Tiny square thumb (96px, q0.5 data-URI) for the localStorage history strip. */
+export async function makeThumb(dataUrl: string): Promise<string> {
+  try {
+    const img = new Image();
+    img.src = dataUrl;
+    await img.decode();
+    const S = 96;
+    const canvas = document.createElement('canvas');
+    canvas.width = S;
+    canvas.height = S;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return '';
+    const side = Math.min(img.width, img.height);
+    ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, S, S);
+    return canvas.toDataURL('image/jpeg', 0.5);
+  } catch {
+    return '';
+  }
+}

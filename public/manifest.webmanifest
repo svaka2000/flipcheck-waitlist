@@ -1,0 +1,17 @@
+{
+  "name": "FlipCheck — know what it's worth",
+  "short_name": "FlipCheck",
+  "description": "Point your camera at any thrift find. Get a resale range + a Buy / Maybe / Skip verdict in seconds.",
+  "id": "/scan",
+  "start_url": "/scan",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0b0e",
+  "theme_color": "#0a0b0e",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

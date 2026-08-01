@@ -241,6 +241,18 @@ footer a:hover { color: var(--text); }
 .scan-plan-price small { font-size: 12px; color: var(--dim); font-weight: 400; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 
+/* recent-finds history strip */
+.hist { margin-top: 18px; }
+.hist-list { list-style: none; padding: 0; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.hist-list li { display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); }
+.hist-list img, .hist-ph { width: 40px; height: 40px; border-radius: 9px; object-fit: cover; background: var(--surface2); flex: none; }
+.hist-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.hist-name { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-range { font-size: 12px; color: var(--dim); }
+.chip.small.buy { color: var(--buy); }
+.chip.small.maybe { color: var(--maybe); }
+.chip.small.skip { color: var(--skip); }
+
 /* where-to-sell recommendations */
 .sell-list { list-style: none; padding: 0; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
 .sell-list li { display: flex; flex-direction: column; gap: 3px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 11px 13px; }

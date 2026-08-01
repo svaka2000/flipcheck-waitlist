@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { isProForUser } from '@/lib/entitlement';
+import { recordScanMetric } from '@/lib/store';
 import { createClient } from '@/lib/supabase/server';
 
 /**
@@ -62,6 +63,12 @@ export async function POST(req: Request) {
     data = await upstream.json();
   } catch {
     return Response.json({ ok: false, code: 'UPSTREAM', error: 'Bad response from scan service.' }, { status: 502 });
+  }
+
+  // Retention metric: device reports its distinct scan-day count; >=2 = return scanner.
+  if (data?.ok) {
+    const days = Number(req.headers.get('x-fc-days')) || 1;
+    recordScanMetric(userId, days).catch(() => {});
   }
 
   const res = Response.json(data, { status: upstream.status });

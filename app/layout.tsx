@@ -14,7 +14,9 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
   applicationName: 'FlipCheck',
-  icons: { icon: '/icon.png', apple: '/icon.png' },
+  manifest: '/manifest.webmanifest',
+  icons: { icon: '/icon.png', apple: '/apple-touch-icon.png' },
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'FlipCheck' },
   openGraph: {
     title: TITLE,
     description: DESC,

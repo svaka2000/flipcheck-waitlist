@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useRef, useState } from 'react';
-import { compressForScan } from '@/lib/image';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { addHistory, getHistory, scanDayCount, type HistoryEntry } from '@/lib/history';
+import { compressForScan, makeThumb } from '@/lib/image';
 
 type Verdict = 'BUY' | 'MAYBE' | 'SKIP';
 type Confidence = 'High' | 'Medium' | 'Low';
@@ -33,6 +34,15 @@ export default function ScanPage() {
   const [result, setResult] = useState<ScanResult | null>(null);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [error, setError] = useState('');
+  const [recent, setRecent] = useState<HistoryEntry[]>([]);
+
+  // PWA service worker + load local history
+  useEffect(() => {
+    setRecent(getHistory());
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  }, []);
 
   const pick = useCallback(() => fileRef.current?.click(), []);
 
@@ -49,7 +59,7 @@ export default function ScanPage() {
         setStage('analyzing');
         const res = await fetch('/api/scan', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'x-fc-days': String(scanDayCount() + 1) },
           body: JSON.stringify({ imageBase64: img.base64, profitThreshold: profit }),
         });
         const data = await res.json();
@@ -66,6 +76,19 @@ export default function ScanPage() {
         setResult(data.result);
         if (typeof data.scansRemaining === 'number') setRemaining(data.scansRemaining);
         setStage('result');
+        // Save to local history (retention strip + return-scanner day tracking)
+        const thumb = await makeThumb(img.dataUrl);
+        const entry: HistoryEntry = {
+          id: crypto.randomUUID(),
+          itemName: data.result.itemName,
+          verdict: data.result.verdict,
+          valueLow: data.result.valueLow,
+          valueHigh: data.result.valueHigh,
+          thumb,
+          at: Date.now(),
+        };
+        addHistory(entry);
+        setRecent((r) => [entry, ...r].slice(0, 40));
       } catch {
         setError('Could not read that image. Try again.');
         setStage('error');
@@ -132,6 +155,24 @@ export default function ScanPage() {
             Scan an item
           </button>
           <p className="scan-foot">Gut-check resale value in seconds.</p>
+
+          {recent.length > 0 && (
+            <div className="hist">
+              <div className="scan-eyebrow">Your recent finds</div>
+              <ul className="hist-list">
+                {recent.slice(0, 8).map((h) => (
+                  <li key={h.id}>
+                    {h.thumb ? <img src={h.thumb} alt="" /> : <span className="hist-ph" />}
+                    <div className="hist-meta">
+                      <span className="hist-name">{h.itemName}</span>
+                      <span className="hist-range">${h.valueLow}–${h.valueHigh}</span>
+                    </div>
+                    <span className={`chip small ${verdictClass[h.verdict]}`}>{h.verdict}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       )}
 

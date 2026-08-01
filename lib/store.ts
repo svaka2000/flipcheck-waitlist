@@ -107,3 +107,37 @@ export async function total(): Promise<number> {
 /** Displayed position after "skip the line" credit. */
 export const displayPosition = (position: number, referrals: number) =>
   Math.max(1, position - referrals * REFERRAL_JUMP);
+
+// ---- scan metrics (the Lumos "real user" numbers) ----
+// Keys: fc:m:scans (counter) · fc:m:scanners (set of ids) · fc:m:returners (set of ids
+// that scanned on >=2 distinct days, per the client-reported day count).
+const memMetrics = { scans: 0, scanners: new Set<string>(), returners: new Set<string>() };
+
+/** Fire-and-forget per-scan record. `days` = distinct scan days reported by the device. */
+export async function recordScanMetric(userId: string, days: number): Promise<void> {
+  try {
+    if (kvEnabled) {
+      await cmd(['INCR', 'fc:m:scans']);
+      await cmd(['SADD', 'fc:m:scanners', userId]);
+      if (days >= 2) await cmd(['SADD', 'fc:m:returners', userId]);
+    } else {
+      memMetrics.scans += 1;
+      memMetrics.scanners.add(userId);
+      if (days >= 2) memMetrics.returners.add(userId);
+    }
+  } catch {
+    // metrics must never break a scan
+  }
+}
+
+export async function getScanMetrics(): Promise<{ scans: number; scanners: number; returners: number }> {
+  if (kvEnabled) {
+    const [scans, scanners, returners] = await Promise.all([
+      cmd(['GET', 'fc:m:scans']),
+      cmd(['SCARD', 'fc:m:scanners']),
+      cmd(['SCARD', 'fc:m:returners']),
+    ]);
+    return { scans: Number(scans) || 0, scanners: Number(scanners) || 0, returners: Number(returners) || 0 };
+  }
+  return { scans: memMetrics.scans, scanners: memMetrics.scanners.size, returners: memMetrics.returners.size };
+}
